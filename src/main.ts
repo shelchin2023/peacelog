@@ -14,7 +14,7 @@ const publicClient = createPublicClient({
 
 // 创建表
 const query = db.query(
-  "create table  IF NOT EXISTS  events (id integer primary key,  blockNumber integer,timestamp integer, address text, transactionHash text UNIQUE, eventName text ,user text, amount text,amountFormat integer)"
+  "create table  IF NOT EXISTS  events (id integer primary key,  blockNumber integer,timestamp integer, address text, transactionHash text UNIQUE, eventName text ,user text, amount text,amountFormat integer, createdAt integer)"
 );
 query.run();
 
@@ -24,7 +24,11 @@ const writeLog = async (blockNumber: bigint) => {
     .get();
 
   if (result == null) {
-    console.log(blockNumber, "null");
+    console.log(
+      blockNumber,
+      "null",
+      `SELECT * FROM events WHERE blockNumber = ${blockNumber} LIMIT 1;`
+    );
     const block = await publicClient.getBlock({ blockNumber });
     const events = await publicClient.getContractEvents({
       abi: PeACEAbi,
@@ -35,7 +39,7 @@ const writeLog = async (blockNumber: bigint) => {
     });
 
     const insertEvent = db.prepare(
-      "INSERT INTO events (blockNumber,timestamp,address,transactionHash,eventName, user,amount,amountFormat) VALUES (?,?,?,?,?,?,?,?)"
+      "INSERT INTO events (blockNumber,timestamp,address,transactionHash,eventName, user,amount,amountFormat,createdAt) VALUES (?,?,?,?,?,?,?,?,?)"
     );
 
     const insertEvents = db.transaction((events) => {
@@ -48,7 +52,8 @@ const writeLog = async (blockNumber: bigint) => {
           event.eventName,
           event.args.user,
           event.args.amount.toString(),
-          parseFloat(formatEther(event.args.amount))
+          parseFloat(formatEther(event.args.amount)),
+          Date.now()
         );
       return events.length;
     });
@@ -69,9 +74,6 @@ const writeLog = async (blockNumber: bigint) => {
       const count = insertEvents(events);
       return count;
     }
-  } else {
-    console.log(blockNumber, "not null", result);
-    return -1;
   }
 };
 
@@ -90,14 +92,13 @@ const run = async () => {
       (_, i) => fromBlock + BigInt(i)
     );
 
-    const { results, errors } = await PromisePool.for(blockNumbers)
+    const { errors } = await PromisePool.for(blockNumbers)
       .handleError(async (error, user) => {
         console.log(error, user);
       })
-      .withConcurrency(20)
+      .withConcurrency(10)
       .process(writeLog);
 
-    console.log("results len =>", results.length);
     console.log("errors len =>", errors.length);
     isruning = false;
   } catch (e) {
