@@ -104,11 +104,33 @@ const run = async () => {
   }
 };
 
+const runLatest = async (fromBlock: bigint, toBlock: bigint) => {
+  try {
+    const blockNumbers = Array.from(
+      { length: Number(toBlock - fromBlock) + 1 },
+      (_, i) => fromBlock + BigInt(i)
+    );
+
+    const { results, errors } = await PromisePool.for(blockNumbers)
+      .handleError(async (error, user) => {
+        console.log(error, user);
+      })
+      .withConcurrency(5)
+      .process(writeLog);
+
+    console.log("blockNumbers =>", blockNumbers.length);
+    console.log("results len =>", results.length);
+    console.log("errors len =>", errors.length);
+  } catch (e) {
+    console.log("run =>", e);
+  }
+};
+
 run();
 publicClient.watchBlocks({
   onBlock: async (block) => {
     try {
-      await writeLog(block.number);
+      runLatest(block.number - 200n, block.number - 100n);
     } catch (e) {
       console.log("onBlock  Error=>", e);
     }
