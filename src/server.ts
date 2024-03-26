@@ -54,8 +54,22 @@ const writeLog = async (blockNumber: bigint) => {
       return events.length;
     });
 
-    const count = insertEvents(events);
-    return count;
+    if (events.length == 0) {
+      const count = insertEvents([
+        {
+          transactionHash: blockNumber,
+          eventName: "None",
+          args: {
+            user: "0x",
+            amount: "0",
+          },
+        },
+      ]);
+      return count;
+    } else {
+      const count = insertEvents(events);
+      return count;
+    }
   } else {
     console.log(blockNumber, "not null");
     return -1;
