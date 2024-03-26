@@ -105,13 +105,12 @@ const run = async () => {
 };
 
 run();
-// publicClient.watchBlocks({
-//   onBlock: async (block) => {
-//     if (isruning == false) {
-//       console.log(block.number, "watchBlocks");
-//       run();
-//     } else {
-//       return;
-//     }
-//   },
-// });
+publicClient.watchBlocks({
+  onBlock: async (block) => {
+    try {
+      await writeLog(block.number);
+    } catch (e) {
+      console.log("onBlock  Error=>", e);
+    }
+  },
+});
