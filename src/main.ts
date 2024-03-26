@@ -4,9 +4,8 @@ import { endurance_mainnet } from "@/config/chains/endurance_mainnet";
 import PeACEAbi from "@/config/abi/PeACEAbi";
 import { PromisePool } from "@supercharge/promise-pool";
 
-const db = new Database("/root/metabase-data/peacelog/mydb.sqlite", {
-  create: true,
-});
+const db = new Database(process.env.dbPath!, { create: true });
+console.log(process.env.dbPath);
 
 const publicClient = createPublicClient({
   chain: endurance_mainnet,
@@ -71,7 +70,7 @@ const writeLog = async (blockNumber: bigint) => {
       return count;
     }
   } else {
-    console.log(blockNumber, "not null");
+    console.log(blockNumber, "not null", result);
     return -1;
   }
 };
@@ -111,7 +110,8 @@ run();
 publicClient.watchBlocks({
   onBlock: async (block) => {
     if (isruning == false) {
-      await run();
+      console.log(block.number, "watchBlocks");
+      run();
     } else {
       return;
     }
