@@ -75,7 +75,6 @@ const writeLog = async (blockNumber: bigint) => {
   }
 };
 
-let isruning = false;
 const run = async () => {
   try {
     const blockNumber = await publicClient.getBlockNumber();
@@ -127,12 +126,19 @@ const runLatest = async (fromBlock: bigint, toBlock: bigint) => {
 };
 
 run();
+
+let islatestruning = false;
 publicClient.watchBlocks({
   onBlock: async (block) => {
     try {
-      runLatest(block.number - 200n, block.number - 100n);
+      if (islatestruning == false) {
+        islatestruning = true;
+        await runLatest(block.number - 200n, block.number - 100n);
+        islatestruning = false;
+      }
     } catch (e) {
       console.log("onBlock  Error=>", e);
+      islatestruning = false;
     }
   },
 });
