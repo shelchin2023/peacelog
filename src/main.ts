@@ -134,7 +134,7 @@ publicClient.watchBlocks({
     try {
       if (islatestruning == false && block.number <= finishedBlock) {
         islatestruning = true;
-        await runLatest(block.number - 250n, block.number - 50n);
+        await runLatest(block.number - 110n, block.number - 10n);
         islatestruning = false;
       }
     } catch (e) {
