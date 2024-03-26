@@ -74,12 +74,14 @@ const writeLog = async (blockNumber: bigint) => {
       const count = insertEvents(events);
       return count;
     }
+  } else {
+    console.log("not null");
   }
 };
 
 let isruning = false;
 const run = async () => {
-  isruning = true;
+ 
   try {
     const blockNumber = await publicClient.getBlockNumber();
 
@@ -102,21 +104,19 @@ const run = async () => {
     console.log("blockNumbers =>", blockNumbers.length);
     console.log("results len =>", results.length);
     console.log("errors len =>", errors.length);
-    isruning = false;
   } catch (e) {
     console.log("run =>", e);
-    isruning = false;
   }
 };
 
 run();
-publicClient.watchBlocks({
-  onBlock: async (block) => {
-    if (isruning == false) {
-      console.log(block.number, "watchBlocks");
-      run();
-    } else {
-      return;
-    }
-  },
-});
+// publicClient.watchBlocks({
+//   onBlock: async (block) => {
+//     if (isruning == false) {
+//       console.log(block.number, "watchBlocks");
+//       run();
+//     } else {
+//       return;
+//     }
+//   },
+// });
