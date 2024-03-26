@@ -75,12 +75,13 @@ const writeLog = async (blockNumber: bigint) => {
   }
 };
 
+const fromBlock = 158689n; //Mar 26 2024 14:55:24 PM (+08:00 UTC)
+const finishedBlock = fromBlock + 21600n + 10n;
+
 const run = async () => {
   try {
     const blockNumber = await publicClient.getBlockNumber();
 
-    const fromBlock = 158689n; //Mar 26 2024 14:55:24 PM (+08:00 UTC)
-    const finishedBlock = fromBlock + 21600n + 10n;
     const toBlock = blockNumber < finishedBlock ? blockNumber : finishedBlock; // fromBlock + 21600n + 10n; //Mar 29 2024 14:00:00 AM (+08:00 UTC)
 
     const blockNumbers = Array.from(
@@ -131,7 +132,7 @@ let islatestruning = false;
 publicClient.watchBlocks({
   onBlock: async (block) => {
     try {
-      if (islatestruning == false) {
+      if (islatestruning == false && block.number <= finishedBlock) {
         islatestruning = true;
         await runLatest(block.number - 250n, block.number - 50n);
         islatestruning = false;
