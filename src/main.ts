@@ -99,7 +99,7 @@ const run = async () => {
       .withConcurrency(10)
       .process(writeLog);
 
-    console.log("blockNumbers =>", blockNumbers);
+    console.log("blockNumbers =>", blockNumbers.length);
     console.log("results len =>", results.length);
     console.log("errors len =>", errors.length);
     isruning = false;
