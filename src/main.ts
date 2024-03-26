@@ -98,7 +98,7 @@ const run = async () => {
       .handleError(async (error, user) => {
         console.log(error, user);
       })
-      .withConcurrency(10)
+      .withConcurrency(5)
       .process(writeLog);
 
     console.log("blockNumbers =>", blockNumbers.length);
