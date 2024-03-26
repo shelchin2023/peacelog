@@ -92,13 +92,15 @@ const run = async () => {
       (_, i) => fromBlock + BigInt(i)
     );
 
-    const { errors } = await PromisePool.for(blockNumbers)
+    const { results, errors } = await PromisePool.for(blockNumbers)
       .handleError(async (error, user) => {
         console.log(error, user);
       })
       .withConcurrency(10)
       .process(writeLog);
 
+    console.log("blockNumbers =>", blockNumbers);
+    console.log("results len =>", results.length);
     console.log("errors len =>", errors.length);
     isruning = false;
   } catch (e) {
