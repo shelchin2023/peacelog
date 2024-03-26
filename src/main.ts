@@ -24,11 +24,7 @@ const writeLog = async (blockNumber: bigint) => {
     .get();
 
   if (result == null) {
-    console.log(
-      blockNumber,
-      "null",
-      `SELECT * FROM events WHERE blockNumber = ${blockNumber} LIMIT 1;`
-    );
+    console.log(blockNumber, "null");
     const block = await publicClient.getBlock({ blockNumber });
     const events = await publicClient.getContractEvents({
       abi: PeACEAbi,
@@ -81,7 +77,6 @@ const writeLog = async (blockNumber: bigint) => {
 
 let isruning = false;
 const run = async () => {
- 
   try {
     const blockNumber = await publicClient.getBlockNumber();
 
