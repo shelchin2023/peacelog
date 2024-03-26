@@ -133,7 +133,7 @@ publicClient.watchBlocks({
     try {
       if (islatestruning == false) {
         islatestruning = true;
-        await runLatest(block.number - 200n, block.number - 100n);
+        await runLatest(block.number - 1050n, block.number - 50n);
         islatestruning = false;
       }
     } catch (e) {
