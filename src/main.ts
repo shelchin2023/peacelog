@@ -76,7 +76,7 @@ const writeLog = async (blockNumber: bigint) => {
 };
 
 const fromBlock = 158689n; //Mar 26 2024 14:55:24 PM (+08:00 UTC)
-const finishedBlock = fromBlock + 21600n + 10n;
+const finishedBlock = fromBlock + 21600n + 100n;
 
 const run = async () => {
   try {
