@@ -1,8 +1,9 @@
 import { Database } from "bun:sqlite";
 import { http, createPublicClient, formatEther } from "viem";
+import { PromisePool } from "@supercharge/promise-pool";
 import { endurance_mainnet } from "@/config/chains/endurance_mainnet";
 import PeACEAbi from "@/config/abi/PeACEAbi";
-import { PromisePool } from "@supercharge/promise-pool";
+
 
 const db = new Database(process.env.dbPath!, { create: true });
 console.log(process.env.dbPath);
